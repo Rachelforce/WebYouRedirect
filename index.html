@@ -5,18 +5,21 @@
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.5/dist/mindar-image.prod.js"></script>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.5/dist/mindar-image-aframe.prod.js"></script>
-
     <script>
         const onFirstTagretFound = () => {
             console.log("start onFirstTargetFound function");
             const webButton = document.querySelector("#website-button");
             const chatButton = document.querySelector("#chat-button");
             const phoneButton = document.querySelector("#phone-button");
-            const avatar = document.querySelector("#avatar");
+            const contactButton = document.querySelector("#contact-button");
+            const websitePreview = document.querySelector("#website-preview");
+            const moreInfo_button = document.querySelector("#moreInfo-button");
             const paintandquestPreviewButton = document.querySelector("#paintandquest-preview-button");
             webButton.addEventListener('click', function (evt) {
                 console.log("click event - webButton")
-                window.location.href = "https://web-you.pl";
+                websitePreview.setAttribute("visible", "true");
+                websitePreview.emit("appearanceScl");
+
             });
             chatButton.addEventListener('click', function (evt) {
                 console.log("click event - chatButton")
@@ -26,8 +29,20 @@
                 console.log("click event - phoneButton")
                 window.open('tel:+380639656538');
             });
-
-
+            contactButton.addEventListener('click', () => {
+                var link = document.createElement("a");
+                link.setAttribute('download', '');
+                link.href = "https://vcard.link/card/DCSf.vcf";
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+        });
+            websitePreview.addEventListener('click', function (evt) {
+                window.location.href = "https://web-you.pl";
+            });
+            moreInfo_button.addEventListener('click', function (evt) {
+                window.location.href = "https://www.instagram.com/ar/774262530493419/?ch=MmMwOGU4NDFkYjFkNWFlNDVjYTBiMGY1NWUyZDA0Zjc%3D";
+            });
             paintandquestPreviewButton.addEventListener('click', () => {
                 paintandquestPreviewButton.setAttribute("visible", false);
                 const testVideo = document.createElement("video");
@@ -84,7 +99,6 @@
             const video_panel = document.querySelector("#portfolio-panel");
             const name_panel = document.querySelector("#name-panel");
 
-
             chat_button.setAttribute("visible", "true");
             chat_button.emit("appearanceRot");
             chat_button.emit("appearanceScl");
@@ -108,12 +122,16 @@
                 moreInfo_button.emit("appearanceScl");
             }, 900);
             setTimeout(() => {
-            video_panel.setAttribute("visible", "true");
-            video_panel.emit("appearancePos");
+                video_panel.setAttribute("visible", "true");
+                video_panel.emit("appearancePos");
+                setTimeout(() => {
+                    video_panel.emit("appearancePos2");
+                    video_panel.emit("appearanceScl");
+                }, 1200);
             }, 600);
             setTimeout(() => {
-            name_panel.setAttribute("visible", "true");
-            name_panel.emit("appearancePos");
+                name_panel.setAttribute("visible", "true");
+                name_panel.emit("appearancePos");
             }, 300);
         }
         const onEveryTargetFound = () => {
@@ -133,13 +151,16 @@
             const name_panel = document.querySelector("#name-panel");
             const contact_button = document.querySelector("#contact-button");
             const moreInfo_button = document.querySelector("#moreInfo-button");
+            const websitePreview = document.querySelector("#website-preview");
             chat_button.setAttribute("visible", "false");
             phone_button.setAttribute("visible", "false");
             website_button.setAttribute("visible", "false");
             video_panel.setAttribute("visible", "false");
             name_panel.setAttribute("visible", "false");
             contact_button.setAttribute("visible", "false");
+            video_panel.setAttribute("scale", "1.1 1.1 1.1");
             moreInfo_button.setAttribute("visible", "false");
+            websitePreview.setAttribute("visible", "false");
         }
         var isFirstTime = false;
         AFRAME.registerComponent('mytarget', {
@@ -261,7 +282,7 @@
     </div>
 
     <a-scene
-            mindar-image="imageTargetSrc: assets/targets.mind; showStats: false; uiScanning: #example-scanning-overlay;"
+            mindar-image="imageTargetSrc: assets/targets.mind; showStats: false; uiScanning: #example-scanning-overlay; filterMinCF:0.0001; filterBeta: 0.001;"
             embedded color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights"
             vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
         <a-assets>
@@ -274,8 +295,13 @@
             <img id="name-img" src="./assets/card-example/icons/name.png"/>
             <img id="avatar-img" src="./assets/card-example/icons/photo.png"/>
             <img id="paintandquest-preview" src="./assets/card-example/portfolio/videoPreview.png"/>
+            <img id="vector-1" src="./assets/logo/Vector.png"/>
+            <img id="vector-2" src="./assets/logo/Vector-1.png"/>
+            <img id="vector-3" src="./assets/logo/Vector-2.png"/>
+            <img id="vector-4" src="./assets/logo/Vector-3.png"/>
+            <img id="websitePreview" src="./assets/card-example/icons/websitePreview.png"/>
             <video id="paintandquest-video-mp4" loop="true" src="./assets/card-example/IMG_7263.MP4"></video>
-            <video id="paintandquest-video-webm" loop="true" src="./assets/card-example/IMG_7263.webm"></video>
+
 
 
         </a-assets>
@@ -288,8 +314,10 @@
             <a-plane src="#card" position="0 0 0" height="0.552" width="1" scale="1.1 1.1 1.1"
                      rotation="0 0 0"></a-plane>
 
-            <a-entity visible=false id="portfolio-panel" position="0 0 -0.0 1" scale="1.1 1.1 1.1"
-                      animation__appearancePos="property: position;from:0 0 -0.01; to: 1.2 0 -0.01; startEvents: appearancePos; dir: alternate; easing: easeInOutQuad;">
+            <a-entity visible="false" id="portfolio-panel" position="0 0 -0.01" scale="1.1 1.1 1.1"
+                      animation__appearancePos="property: position;from:0 0 -0.01; to: 1.2 0 -0.01; startEvents: appearancePos; dir: alternate; easing: easeInOutQuad;"
+                      animation__appearanceScl="property: scale;from:1.1 1.1 1.1; to: 1.6 1.6 1.6; startEvents: appearanceScl; dir: alternate; easing: easeInOutQuad;"
+                      animation__appearancePos2="property: position;from:1.2 0 -0.01; to: 1.4 -0.13 -0.01; startEvents: appearancePos2; dir: alternate; easing: easeInOutQuad;">
                 <a-entity id="portfolio-item0">
                     <a-video id="paintandquest-video-link" webkit-playsinline playsinline width="1" height="0.552"
                              position="0 0 0"></a-video>
@@ -298,7 +326,22 @@
                     </a-image>
                 </a-entity>
             </a-entity>
-
+            <a-entity visible="true" id="logo-3d" position="0.28 -0.05 0.1" rotation="0 0 -35"
+                      animation__appearancePos="property: position;from:0 0 -0.01; to: 1.2 0 -0.01; startEvents: appearancePos; dir: alternate; easing: easeInOutQuad;">
+                <a-plane id="logo-1" visible="true" class="clickable"
+                         material="side:double; opacity:0.99; alpha-test:0.5;" src="#vector-1" position="0 0 0.05"
+                         height="0.4" width="0.3479"></a-plane>
+                <a-plane id="logo-2" visible="true" class="clickable"
+                         material="side:double; opacity:0.99; alpha-test:0.5;" src="#vector-2" position="0.15 0.07 0.04"
+                         height="0.4" width="0.3479"></a-plane>
+                <a-plane id="logo-3" visible="true" class="clickable"
+                         material="side:double; opacity:0.99; alpha-test:0.5;" src="#vector-3" position="0.2 0.0 0.03"
+                         height="0.4" width="0.3479"></a-plane>
+                <a-plane id="logo-4" visible="true" class="clickable"
+                         material="side:double; opacity:0.99; alpha-test:0.5;" src="#vector-4"
+                         position="0.33 -0.03 0.02"
+                         height="0.4" width="0.3479"></a-plane>
+            </a-entity>
             <a-plane id="chat-button" visible="false" class="clickable"
                      material="side:double; opacity:0.99; alpha-test:0.5;" src="#chat-icon" position="-0.42 -0.5 0"
                      height="0.20" width="0.20"
@@ -324,12 +367,18 @@
 
                      animation__appearanceRot=" property: rotation; from:0 0 0; to: 0 720 0; startEvents: appearanceRot; dir: alternate; easing: easeInOutQuad;"
                      animation__appearanceScl=" property: scale; from:0.1 0.1 0.1; to: 1 1 1; startEvents: appearanceScl; dir: alternate easing: easeInOutQuad;"></a-plane>
-            <a-plane id="moreInfo-button"  visible="false" class="clickable" material="side:double; opacity:0.99; alpha-test:0.5;"
+            <a-plane id="website-preview" visible="false" class="clickable"
+                     material="side:double; opacity:0.99; alpha-test:0.5;" src="#websitePreview" alpha-test="0.5"
+                     position="1.2 -1.98 0" height="1.284" width="1" scale="2 2 2"
+                     animation__appearanceScl=" property: scale; from:2 0.1 2; to:  2 2 2; dur:300; startEvents: appearanceScl; dir: alternate easing: easeInOutQuad;"></a-plane>
+
+            <a-plane id="moreInfo-button" visible="false" class="clickable"
+                     material="side:double; opacity:0.99; alpha-test:0.5;"
                      src="#moreInfo-img" alpha-test="0.5" position="-0.22 -0.75 0"
                      height="0.1225" width="0.6025"
                      animation__appearanceScl=" property: scale; from:0.1 0.1 0.1; to: 1 1 1; startEvents: appearanceScl; dir: alternate easing: easeInOutQuad;"></a-plane>
-            <a-entity id="name-panel" position="-0.4 0 -0.1" visible="false"
-                      animation__appearancePos="property: position;from:-0.43 0 -0.01; to: -0.43 0.45 0; startEvents: appearancePos; dir: alternate; easing: easeInOutQuad;">
+            <a-entity id="name-panel" position="-0.38 0 -0.1" scale="1.3 1.3 1.3" visible="false"
+                      animation__appearancePos="property: position;from:-0.42 0 -0.01; to: -0.42 0.5 0; startEvents: appearancePos; dir: alternate; easing: easeInOutQuad;">
                 <a-plane id="avatar" class="clickable" src="#avatar-img" alpha-test="0.5" position="0 0 0"
                          height="0.20"
                          width="0.20"
